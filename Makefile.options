@@ -1,0 +1,120 @@
+########################################################################
+# THIRD PARTY LIBRARY LOCATIONS
+# These paths shoud be adjusted for the machine being compiled on.
+########################################################################
+CGNS_INCLUDE_PATH  = /usr/local/include
+CGNS_LIB_PATH      = /usr/local/lib
+
+
+#
+# set architecture
+#
+ARCH = $(shell uname)
+
+ifeq ($(ARCH),Linux)
+OS = $(shell uname -i)
+ifeq ($(OS),x86_64)
+	ARCH = Linux-64
+endif
+endif
+
+# 
+# set defaults for each of the architectures below.
+#
+LIBS = 
+INTEL_CCOMPILER_PATH =
+INTEL_LIB_PATH =
+DEFINES =
+INCLUDE_PATH = 
+LIBRARY_PATH = 
+CC  = mpic++
+LINK = mpic++
+RANLIB = ranlib
+CPPFLAGS = $(DEFINES)
+EXE_SUFFIX = exe
+
+
+########################################################################
+#  MAC OSX, using gcc compilers
+########################################################################
+ifeq ($(ARCH),Darwin)
+	OCTREE_INCLUDE_PATH  = /Users/karman/Documents/SimGrid/OCTREE_LIBRARY
+	OCTREE_LIB_PATH      = /Users/karman/Documents/SimGrid/OCTREE_LIBRARY
+	SPACE_INCLUDE_PATH = /Users/karman/Documents/SimGrid/SPACING_FIELD
+	SPACE_LIB_PATH     = /Users/karman/Documents/SimGrid/SPACING_FIELD
+	HDF5_INCLUDE_PATH = /usr/local/hdf5/include
+	HDF5_LIB_PATH     = /usr/local/hdf5/lib
+#	METIS_INCLUDE_PATH = /usr/local/metis
+#	METIS_LIB_PATH	   = /usr/local/metis
+#	COMP = g++
+#	LINK = g++
+	COMP = mpic++
+	LINK = mpic++
+#	LINK = g++ -pg
+#	CFLAGS = -c -g -Wall -D_DEBUG
+#	CFLAGS = -c -g -D_DEBUG
+#	CFLAGS = -c -O3 -D_DEBUG
+	CFLAGS = -c -O3 -DPARALLEL
+#	CFLAGS = -c -O3 -D_DEBUG
+#	CFLAGS = -c -O3
+#	CFLAGS = -c -O3 -pg
+	LINKSTATIC = ar rv
+	LINKSHARED = ld -shared -o
+	EXE_SUFFIX = MACOSX
+endif
+
+########################################################################
+#  Linux-64, using intel compilers
+########################################################################
+ifeq ($(ARCH),Linux-64)
+	OCTREE_INCLUDE_PATH  = /home/karman/SimGrid/OCTREE_LIBRARY
+	OCTREE_LIB_PATH      = /home/karman/SimGrid/OCTREE_LIBRARY
+	SPACE_INCLUDE_PATH = /home/karman/SimGrid/SPACING_FIELD
+	SPACE_LIB_PATH     = /home/karman/SimGrid/SPACING_FIELD
+	CGNS_INCLUDE_PATH  = /simcenter/meshdev/cgns/cgns_3.0/release/3.0.5/src
+	CGNS_LIB_PATH      = /simcenter/meshdev/cgns/cgns_3.0/release/3.0.5/src/LINUX64
+	HDF5_INCLUDE_PATH  = /usr/local/hdf5-64-gcc/include
+	HDF5_LIB_PATH      = /usr/local/hdf5-64-gcc/lib
+#	INTEL_CCOMPILER_PATH = /usr/local/intel/cce/9.1
+#	INTEL_LIB_PATH = /usr/local/intel/cce/9.1/lib
+#	INCLUDE_PATH +=-I$(INTEL_CCOMPILER_PATH)
+#	LIBRARY_PATH +=-L$(INTEL_LIB_PATH)
+#	COMP = $(INTEL_CCOMPILER_PATH)/bin/icc
+#	LINK = $(INTEL_CCOMPILER_PATH)/bin/icc  
+#	COMP = /usr/local/mpich2-intel64/bin/mpicxx
+#	LINK = /usr/local/mpich2-intel64/bin/mpicxx
+	COMP = mpic++
+	LINK = mpic++
+#	LIBS += -lstdc++ /usr/local/intel/cce/9.1/lib/libcxa.a -lunwind /usr/local/openmpi-1.2.6-patched-gcc64-static/lib/libmpi.a /usr/local/openmpi-1.2.6-patched-gcc64-static/lib/libopen-rte.a /usr/local/openmpi-1.2.6-patched-gcc64-static/lib/libopen-pal.a -lpthread /usr/lib64/librt.a /usr/lib64/libutil.a /usr/local/intel/cce/9.1/lib/libcxa.a
+#	LIBS += -lstdc++ /usr/local/openmpi-1.2.6-patched-gcc64-static/lib/libmpi.a /usr/local/openmpi-1.2.6-patched-gcc64-static/lib/libopen-rte.a /usr/local/openmpi-1.2.6-patched-gcc64-static/lib/libopen-pal.a -lpthread -lnuma /usr/lib64/librt.a /usr/lib64/libutil.a /usr/local/intel/cce/9.1/lib/libcxa.a /usr/local/intel/cce/9.1/lib/libunwind.a
+#	LIBS += -lcxa -lunwind -lstdc++ -lmpi -lpthread -lnuma
+#	CFLAGS = -c -g -p64 -D_DEBUG
+#	CFLAGS = -c -g -Wall -D_DEBUG
+#	CFLAGS = -c -O3 -Wall -p64 -D_DEBUG
+#	CFLAGS = -c -g -D_DEBUG -lefence -p64
+#	CFLAGS = -c -O3 -DPARALLEL -D_DEBUG
+	CFLAGS = -c -O3 -DPARALLEL
+#	CFLAGS = -c -O3
+#	CFLAGS = -c -g -D_DEBUG
+	LINKSTATIC = ar rv
+	LINKSHARED = ld -shared -o
+	EXE_SUFFIX = LINUX64
+endif
+
+
+#
+# add in appropriate include paths and defines based on third party library
+# locations.
+#
+
+INCLUDE_PATH += -I$(HDF5_INCLUDE_PATH)
+LIBRARY_PATH += -L$(HDF5_LIB_PATH)
+INCLUDE_PATH += -I$(SPACE_INCLUDE_PATH)
+LIBRARY_PATH += -L$(SPACE_LIB_PATH)
+INCLUDE_PATH += -I$(OCTREE_INCLUDE_PATH)
+LIBRARY_PATH += -L$(OCTREE_LIB_PATH)
+INCLUDE_PATH += -I$(CGNS_INCLUDE_PATH)
+LIBRARY_PATH += -L$(CGNS_LIB_PATH)
+
+INCLUDE_PATH += -I../include
+

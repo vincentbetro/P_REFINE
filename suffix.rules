@@ -1,0 +1,6 @@
+.cpp.o:
+	$(COMP) $(INCLUDE_PATH) $(CFLAGS) $<
+
+.c.o:
+	$(COMP) $(INCLUDE_PATH) $(CFLAGS) $<
+
